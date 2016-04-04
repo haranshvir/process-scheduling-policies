@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Process Calculations</title>
+		<script type="text/javascript" src="d3.js"></script>
+		<script src="//d3js.org/d3.v3.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<style type="text/css">
+
+			body {
+				background-color: #93B874;
+			}
+
+		
+			.text {
+				font-family: arial;
+				color: red;
+				}
+
+			div.bar {
+				display: inline-block;
+
+				position: relative;
+				top: 30px;
+				width: 20px;
+				height: 30px;
+
+				background-color: teal;
+				text-align: center;
+				font-weight: bold;
+				font-size: 100%;
+				border: 3px solid #ffffCC;
+				
+			}
+			
+			.bar:hover {
+			  fill: brown;
+			}
+						
+			div.SJF {
+				display: inline-block;
+
+				display: table-cell;
+				position: relative;
+				top: 100px;
+				width: 20px;
+				height: 30px;	
+
+				background-color: teal;
+				text-align: center;
+				font-weight: bold;
+				font-size: 100%;
+				border: 3px solid #ffffCC;
+			}
+
+
+			div.RR {
+				display: inline-block;
+				position: relative;
+				top: 170px;
+				width: 30px;
+				height: 30px;	
+
+				background-color: teal;
+				text-align: center;
+				font-weight: bold;
+				font-size: 100%;
+				border: 3px solid #ffffCC;
+			}
+			
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+	
+		</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	</head>
+	<body>
+	<h1>Process Calculations</h1>
+	<b>Enter the burst times for the processes (between 1 to 6 milliseconds):</b>
+<br>
+<input type="text" id="no1" placeholder="P0">
+<input type="text" id="no2" placeholder="P1">
+<input type="text" id="no3" placeholder="P2">
+<input type="text" id="no4" placeholder="P3">
+<input type="text" id="no5" placeholder="P4">
+<button id ="insert" onclick="insert()">Insert</button>
+<br>
+<br>
+<b>Choose a scheduling policy:</b>
+<br>
+<button id ="FCFS" onclick="FCFS()">FCFS</button>
+<button id ="SJF" onclick="callBubbleSort()">SJF</button>
+<button id ="RR" onclick="roundRobin()">RR</button>
+<button id ="RR" onclick="AvgWT()">Compare</button>
+<br>
+		<script type="text/javascript">
+var w = 500;
+var h = 100;
+var barPadding = 1; 		
+		
+
+
+		
+function init() {
+    // Clear forms here
+    document.getElementById("no1").value = "";
+        document.getElementById("no2").value = "";
+       document.getElementById("no3").value = "";
+     document.getElementById("no4").value = "";
+    document.getElementById("no5").value = "";
+     // document.getElementById("FCFS").style.visibility = "hidden";
+
+}
+window.onload = init;
+
+$(document).ready(function(){
+    $("#insert").click(function(){
+        $("#insert").hide();
+        $("#FCFS").show();
+    });
+    
+});
+
+		
+			var dataset = [];
+			var result = [];
+			var time;
+  			var timeSJF;
+    		var F1, F2,F3,F4,F5,S1,S2,S3,S4,S5,r1,r2,r3,r4,r5, w1,w2,w3,w4,w5;
+			var AvgWtVal=[];
+			var ProcessArray=["FCFS","SJF","RR"];
+			
+			function insert(){
+var x = document.getElementById("no1").value;
+    var y = document.getElementById("no2").value;
+    var z = document.getElementById("no3").value;
+    var a = document.getElementById("no4").value;
+    var b = document.getElementById("no5").value;
+    dataset.push(x.valueOf());
+    dataset.push(y.valueOf());
+    dataset.push(z.valueOf());
+    dataset.push(a.valueOf());
+    dataset.push(b.valueOf());
+F1=0;
+F2 = parseFloat(x);
+F3 = parseFloat(x)+parseFloat(y);
+F4 = parseFloat(x)+parseFloat(y)+parseFloat(z);
+F5 = parseFloat(x)+parseFloat(y)+parseFloat(z)+parseFloat(a);
+time = (F2+F3+F4+F5);
+};
+
+			function FCFS(){             
+			var q = d3.select("body").select("div")
+				.data(dataset)
+				.enter()
+				.append("div")
+				.attr("class", "bar")
+				.transition()
+				.duration(500)
+				.ease("linear")
+				.text(function(d,i){ return "P"+i+" - "+d+"ms";})
+				.style("width", function(d) {
+					var barWidth = d * 60;
+					return barWidth + "px"; 
+				});
+				
+
+
+document.getElementById("demo2").innerHTML = "<b>Average Wait Time for FCFS: (" +F1+"+"+F2+"+"+F3+"+"+F4+"+"+F5+")/5"+" = "+time/5+"ms";
+console.log(time/5);
+AvgWtVal[0]=time/5 ;
+console.log("this is consoleFCFs"+time/5);
+};
+
+
+function callBubbleSort(){
+var arr = [];
+for (var i = 0; i<5; i++){
+arr[i] = dataset[i];
+console.log(arr[i]);
+} 
+bubbleSort(arr);
+}
+
+function bubbleSort(arr){
+   var len = arr.length;
+   var temp= 0;
+   for (var i = 0; i<len; i++){
+     for(var j = i; j<=len-1; j++){
+       if(arr[j-1]>arr[j]){
+           temp = arr[j-1];
+           arr[j-1] = arr[j];
+           arr[j] = temp;
+        }
+     }
+S1=0;
+S2 = parseFloat(arr[0]);
+S3 = parseFloat(arr[0])+parseFloat(arr[1]);
+S4 = parseFloat(arr[0])+parseFloat(arr[1])+parseFloat(arr[2]);
+S5 = parseFloat(arr[0])+parseFloat(arr[1])+parseFloat(arr[2])+parseFloat(arr[3]);
+timeSJF = S2+S3+S4+S5;
+console.log(timeSJF);
+   }
+   
+	  d3.select("body").select("div")
+				.data(arr)
+				.enter()
+				.append("div")
+				.attr("class", "SJF")
+				
+.transition()
+    .duration(500)
+    .ease("linear")
+				.text(function(d,i,j){ for (var x=0;x<5;x++)
+										if(arr[i] ==dataset[x])return "P"+x+" - "+d+"ms";})
+				.style("width", function(e) {
+					
+					var barWidth1 = e * 60;
+					return barWidth1 + "px";
+					
+				});
+AvgWtVal[1] =timeSJF/5;
+console.log("This is consle SJF::"+timeSJF/5);
+document.getElementById("demo1").innerHTML = "<b>Average Wait Time for SJF: (" +S1+"+"+S2+"+"+S3+"+"+S4+"+"+S5+")/5"+" = "+timeSJF/5+"ms";
+
+}
+
+
+function roundRobin(){
+   var arr1 = [];
+   var z=0;
+   var count1=0,count2=0,count3=0,count4=0,count5=0;
+   var timer= 0, totaltime =0;
+   for (var i = 0; i<5; i++){
+arr1[i] = dataset[i];
+}
+r1=parseInt(arr1[0]);
+r2 = parseInt(arr1[1]);
+r3 = parseFloat(arr1[2]);
+r4 = parseFloat(arr1[3]);
+r5 = parseFloat(arr1[4]);
+totaltime = r1+r2+r3+r4+r5;
+for(z= 0; z<totaltime; z++)
+{
+if(arr1[0]>0)
+{
+ result.push(0);
+ arr1[0]--;
+ count2++;
+count3++;
+count4++;
+count5++;
+if(arr1[0] == 0)
+{
+w1=count1;
+console.log("W1"+count1);
+}
+}
+
+if(arr1[1]>0)
+{
+ result.push(1);
+ arr1[1]-- ;
+count1++;
+count3++;
+count4++;
+count5++;
+if(arr1[1] == 0)
+{
+w2=count2;
+console.log("W2"+count2);
+}
+}
+if(arr1[2]>0)
+{
+ result.push(2);
+ arr1[2]--;
+count1++;
+count2++;
+count4++;
+count5++;
+if(arr1[2] == 0)
+{
+w3=count3;
+console.log("W3"+count3);
+}
+}
+if(arr1[3]>0)
+{
+ result.push(3);
+ arr1[3]--;
+count1++;
+count2++;
+count3++;
+count5++;
+
+if(arr1[3] == 0)
+{
+w4=count4;
+console.log("W4"+count4);
+}
+}
+if(arr1[4]>0)
+{
+ result.push(4);
+ arr1[4]--;
+count1++;
+count2++;
+count3++;
+count4++;
+
+if(arr1[4] == 0)
+{
+w5=count5;
+console.log("W5"+count5);
+}
+}
+}
+	 
+	 var x= d3.select("body").select("div")
+				.data(result)
+				.enter()
+				.append("div")
+				.attr("class", "RR")				
+				.transition()
+				.duration(900)
+				.ease("linear")
+				.text(function(d,i){ return "P"+result[i];})
+				.style("width",30);
+
+var RRt=(w1+w2+w3+w4+w5)/5;				
+AvgWtVal[2]=RRt;
+console.log("This is console RR::"+RRt);				
+document.getElementById("demo3").innerHTML = "<b>Average Turnaround Time for Round Robin: (" +w1+"+"+w2+"+"+w3+"+"+w4+"+"+w5+")/5"+" = "+(w1+w2+w3+w4+w5)/5+"ms";
+
+//document.getElementById("demo3").innerHTML = (count1+count2+count3+count4+count5)/10;				
+}
+
+function AvgWT(){
+console.log(AvgWtVal);
+console.log(ProcessArray);
+
+
+//Width and height
+			var w = 500;
+			var h = 100;
+			var barPadding = 1;
+			
+
+	
+			
+//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.append("g")
+						.attr("width", w)
+						.attr("height", h);
+
+						
+			
+
+	  
+//Creating Rect					 
+			svg.selectAll("rect")
+			   .data(AvgWtVal)
+			   .enter()
+			   .append("rect")
+			   .attr("x", function(d,i){
+							return i * 55;})
+			   .attr("y", function(d,i){ return h - (d * 5);})
+			   .attr("width", 50)
+			   .attr("height", function(d){return d*18;})
+			   .attr("fill","teal");		   
+		
+//Adding Text		   
+			svg.selectAll("text")
+			   .data(ProcessArray)
+			   .enter()
+			   .append("text")
+			   .text(function(d,i) {
+			   return d;
+			   console.log(d);
+					})
+			   .attr("x", function(d,i){
+							return 23+i * 55;})
+			   .attr("y", 140
+			   //function(d,i){ return h - (d * 20);
+			   )
+			   .attr("font-family","sans-serif")
+				.attr("font-size","12px")
+				.attr("fill","black")
+				.attr("font-weight","bold")
+				.attr("text-anchor","middle");
+}
+
+</script>
+
+
+<br>	
+<p id="demo2"></p>
+<p id="demo1"></p>
+<p id="demo3"></p>
+
+  <form name="display" method="get" action="FinalProject.html"><br>
+  <input id="fullviz" type="button" name="change" value="<--" onclick="this.form.submit();">
+  <label for="fullviz">Back</label><br>
+  </form>
+			
+	</body>
+</html>
